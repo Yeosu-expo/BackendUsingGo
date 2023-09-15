@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk Admin Page</title>
+</head>
+
+<body>
+    <h1>Kiosk</h1>
+    <h4>Add Menu</h4>
+    <form action="http://localhost:8080/admin" method="post" onsubmit="getJson();">
+        <input type="text" name="name" placeholder="NAME">
+        <input type="text" name="price" placeholder="PRICE">
+        <button type="submit">ADD</button>
+    </form>
+
+    <script src="//code.jquery.com/jquery-3.5.1.min.js"></script> <!-- Load jQuery from CDN -->
+    <script type='text/javascript'>
+        function getJson() {
+            var nameValue = document.getElementsByName("name")[0].value;
+            var priceValue = document.getElementsByName("price")[0].value;
+
+            if (nameValue === "" || priceValue === "") {
+                alert("모든 필드를 입력하세요.");
+                return;
+            }
+
+            var jsonData = {
+                "name": nameValue,
+                "price": priceValue
+            };
+
+            $.ajax({
+                type: "post",
+                url: "http://localhost:8080/admin",
+                dataType: "json",
+                data: JSON.stringify(jsonData),
+                contentType: "application/json",
+                accepts: "application/json",
+            })
+        }
+    </script>
+
+</body>
+
+</html>
