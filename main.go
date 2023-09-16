@@ -1,9 +1,9 @@
 package main
 
 import (
+	"kiosk/kioskPack"
 	"net/http"
 
-	"github.com/Yeosu-expo/backendUsingGo/kioskPack"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
@@ -11,8 +11,9 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/admin", kioskPack.OpenHtml).Methods("GET")
-	router.HandleFunc("/admin", kioskPack.GetAndStoreJson).Methods("POST")
+	router.HandleFunc("/admin", kioskPack.OpenAdminHtml).Methods("GET")
+	router.HandleFunc("/client", kioskPack.OpenClientHtml).Methods("GET")
+	router.HandleFunc("/admin", kioskPack.PostAndStoreJson).Methods("POST")
 
 	http.ListenAndServe("localhost:8080", router)
 }

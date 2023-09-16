@@ -12,6 +12,7 @@
     <h4>Add Menu</h4>
     <form action="http://localhost:8080/admin" method="post" onsubmit="getJson();">
         <input type="text" name="name" placeholder="NAME">
+        <input type="text" name="category" placeholder="CATEGORY">
         <input type="text" name="price" placeholder="PRICE">
         <button type="submit">ADD</button>
     </form>
@@ -20,6 +21,7 @@
     <script type='text/javascript'>
         function getJson() {
             var nameValue = document.getElementsByName("name")[0].value;
+            var categoryValue = document.getElementsByName("category")[0].value;
             var priceValue = document.getElementsByName("price")[0].value;
 
             if (nameValue === "" || priceValue === "") {
@@ -29,6 +31,7 @@
 
             var jsonData = {
                 "name": nameValue,
+                "category": categoryValue,
                 "price": priceValue
             };
 

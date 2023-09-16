@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <style>
+        .menu-container {
+            flex-wrap: wrap;
+        }
+
+        .menu-category {
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            display: none;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pc Room Menu</h1>
+    <ul class="menu-category">
+        <li><button class="menu-container" onclick="toggleMenu('면류')">면류</button>
+            <ul class="menu-item" id="면류-item">
+                {{range .Menus}}
+                {{if eq .Category "면류"}}
+                <ul>
+                    <li>Name: {{.Name}}</li>
+                    <ul>
+                        <li>Price: {{.Price}}</li>
+                    </ul>
+                </ul>
+                {{end}}
+                {{end}}
+            </ul>
+        </li>
+        <li><button class="menu-container" onclick="toggleMenu('밥류')">밥류</button>
+            <ul class="menu-item" id="밥류-item">
+                {{range .Menus}}
+                {{if eq .Category "밥류"}}
+                <ul>
+                    <li>Name: {{.Name}}</li>
+                    <ul>
+                        <li>Price: {{.Price}}</li>
+                    </ul>
+                </ul>
+                {{end}}
+                {{end}}
+            </ul>
+        </li>
+        <li><button class="menu-container" onclick="toggleMenu('음료수')">음료수</button>
+            <ul class="menu-item" id="음료수-item">
+                {{range .Menus}}
+                {{if eq .Category "음료수"}}
+                <ul>
+                    <li>Name: {{.Name}}</li>
+                    <ul>
+                        <li>Price: {{.Price}}</li>
+                    </ul>
+                </ul>
+                {{end}}
+                {{end}}
+            </ul>
+        </li>
+        <li><button class="menu-container" onclick="toggleMenu('간식')">간식</button>
+            <ul class="menu-item" id="간식-item">
+                {{range .Menus}}
+                {{if eq .Category "간식"}}
+                <ul>
+                    <li>Name: {{.Name}}</li>
+                    <ul>
+                        <li>Price: {{.Price}}</li>
+                    </ul>
+                </ul>
+                {{end}}
+                {{end}}
+            </ul>
+        </li>
+    </ul>
+
+
+    <script>
+        function toggleMenu(category) {
+            var container = document.getElementById(category + "-item");
+            if (container.style.display === "none") {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
