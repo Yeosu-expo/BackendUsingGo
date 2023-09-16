@@ -3,13 +3,16 @@ package kioskPack
 import (
 	"database/sql"
 	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 )
 
 func PostAndStoreJson(w http.ResponseWriter, r *http.Request) {
 	menu := new(Menu)
-	err := json.NewDecoder(r.Body).Decode(menu)
+	read, err := io.ReadAll(r.Body)
+	CheckErr(err)
+	err = json.Unmarshal(read, &menu)
 	CheckErr(err)
 
 	db, err := sql.Open("mysql", "root:9250@tcp(127.0.0.1:3306)/kiosk")

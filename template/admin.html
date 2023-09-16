@@ -10,7 +10,7 @@
 <body>
     <h1>Kiosk</h1>
     <h4>Add Menu</h4>
-    <form action="http://localhost:8080/admin" method="post" onsubmit="getJson();">
+    <form action="http://localhost:8080/admin" method="post" onsubmit="getJson();clearInputFields();">
         <input type="text" name="name" placeholder="NAME">
         <input type="text" name="category" placeholder="CATEGORY">
         <input type="text" name="price" placeholder="PRICE">
@@ -36,15 +36,22 @@
             };
 
             $.ajax({
-                type: "post",
+                type: "POST",
                 url: "http://localhost:8080/admin",
-                dataType: "json",
                 data: JSON.stringify(jsonData),
                 contentType: "application/json",
-                accepts: "application/json",
-            })
+                dataType: "json",
+            });
+
+            event.preventDefault();
+        }
+        function clearInputFields() {
+            document.getElementsByName("name")[0].value = "";
+            document.getElementsByName("category")[0].value = "";
+            document.getElementsByName("price")[0].value = "";
         }
     </script>
+
 
 </body>
 
