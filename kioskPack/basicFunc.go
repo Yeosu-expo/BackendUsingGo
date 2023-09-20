@@ -14,10 +14,10 @@ type MenusData struct {
 	Menus []Menu
 }
 
-func CheckErr(err error) bool {
+func CheckErr(err error) {
 	if err != nil {
 		log.Println(err)
-		return true
+		return
 	}
-	return false
+	return
 }

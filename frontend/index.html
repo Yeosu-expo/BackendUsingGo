@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PC Room Chat</title>
+</head>
+
+<body>
+    <div class="center">
+        <h1>PC Room Chatting System</h1>
+        <form id="chatroom-selection">
+            <label for="chatroom">Chatroom:</label>
+            <input type="text" name="chatroom" id="chatroom"><br><br>
+            <input type="submit" value="Change Chatroom">
+        </form>
+        <br>
+        <textarea class="messageArea" id="chatMessages" cols="80" rows="15" placeholder="No chat yet"></textarea>
+        <br>
+        <form id="chatroom-message">
+            <label for="message">Message:</label>
+            <input type="text" name="message" id="message"><br><br>
+            <input type="submit" value="Send">
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        var selectedRoom = "yet";
+
+        class Event {
+            constructor(type, payload) {
+                this.type = type;
+                this.payload = payload;
+            }
+        }
+
+        function routeEvent(event) {
+            if (event.type === undefined) {
+                alert("no 'type' field in event");
+            }
+            switch (event.type) {
+                case "new_message":
+                    console.log("new message");
+                    break;
+                default:
+                    alert("unsupported message type");
+                    break;
+            }
+        }
+
+        // JSON으로 패키징해서 다양한 정보를 다루기 쉽게 할 수 있음
+        function sendEvent(eventName, payload) {
+            const event = new Event(eventName, payload);
+            conn.send(JSON.stringify(event));
+        }
+
+        function changeChatRoom() {
+            var newRoom = document.getElementById("chatroom");
+            if (newRoom != null && newRoom.value != selectedRoom) {
+                console.log(newRoom);
+            }
+            return false;
+        }
+
+        function sendMessage() {
+            var newMessage = document.getElementById("message");
+            if (newMessage != null) {
+                sendEvent("send_message", newMessage.value);
+            }
+            return false;
+        }
+
+        window.onload = function () {
+            document.getElementById("chatroom-selection").onsubmit = changeChatRoom;
+            document.getElementById("chatroom-message").onsubmit = sendMessage;
+
+            if (window["WebSocket"]) {
+                console.log("supports websockets");
+                conn = new WebSocket("ws://" + document.location.host + "/ws");
+
+                conn.onmessage = function (e) {
+                    console.log(e);
+                    // e.data는 메세지 내용임. 그것을 받아오는 것
+                    const eventData = JSON.parse(e.data);
+                    // eventData를 Event객체에 담아주는 함수
+                    const event = Object.assign(new Event, eventData);
+
+                    routeEvent(event)
+                }
+            } else {
+                alert("Not supporting websockets");
+            }
+        }
+    </script>
+    <style type="text/css">
+        .center {
+            margin: auto;
+            width: 50%;
+            border: 3px solid green;
+            padding: 10px;
+        }
+    </style>
+</body>
+
+</html>

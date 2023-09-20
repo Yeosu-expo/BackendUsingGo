@@ -6,7 +6,20 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func setupAPI(router *mux.Router) {
+	manager := NewManager()
+
+	router.Handle("/", http.FileServer(http.Dir("./frontend")))
+	router.HandleFunc("/ws", manager.serveWS)
+}
 
 func main() {
 	router := mux.NewRouter()
@@ -14,7 +27,8 @@ func main() {
 	router.HandleFunc("/admin", kioskPack.OpenAdminHtml).Methods("GET")
 	router.HandleFunc("/client", kioskPack.OpenClientHtml).Methods("GET")
 	router.HandleFunc("/admin", kioskPack.PostAndStoreJson).Methods("POST")
-	router.HandleFunc("/chat", kioskPack.OpenChatHtml).Methods("GET")
+
+	setupAPI(router)
 
 	http.ListenAndServe("localhost:8080", router)
 }
