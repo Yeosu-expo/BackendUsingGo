@@ -11,6 +11,11 @@ func OpenAdminHtml(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
+func OpenChatHtml(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("./template/chat.html"))
+	tmpl.Execute(w, nil)
+}
+
 func OpenClientHtml(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("./template/client.html"))
 

@@ -14,6 +14,7 @@ func main() {
 	router.HandleFunc("/admin", kioskPack.OpenAdminHtml).Methods("GET")
 	router.HandleFunc("/client", kioskPack.OpenClientHtml).Methods("GET")
 	router.HandleFunc("/admin", kioskPack.PostAndStoreJson).Methods("POST")
+	router.HandleFunc("/chat", kioskPack.OpenChatHtml).Methods("GET")
 
 	http.ListenAndServe("localhost:8080", router)
 }
