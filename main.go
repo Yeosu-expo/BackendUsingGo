@@ -6,13 +6,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 )
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
 
 func setupAPI(router *mux.Router) {
 	manager := NewManager()
@@ -30,5 +24,5 @@ func main() {
 
 	setupAPI(router)
 
-	http.ListenAndServe("localhost:8080", router)
+	http.ListenAndServe(":8080", router)
 }

@@ -7,7 +7,26 @@ import (
 	"log"
 	"net/http"
 	"sync"
+
+	"github.com/gorilla/websocket"
 )
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin:     checkOrigin, // 정해진 도메인에서의 접근이 아니면 서버에 연결을 못하게 함
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func checkOrigin(r *http.Request) bool {
+	origin := r.Header.Get("Origin")
+
+	switch origin {
+	case "http://localhost:8080": // 이 주소로 들어오지 않으면 연결이 종료됨
+		return true
+	default:
+		return false
+	}
+}
 
 var ErrEventNotSupported = errors.New("this event type is not supported")
 
