@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"kiosk/kioskPack"
 	"log"
 	"net/http"
@@ -48,10 +47,7 @@ func NewManager() *Manager {
 
 func (m *Manager) setupEventHandlers() {
 	// EventSendMessage라는 이벤트에 맞는 handler정의 및 연결
-	m.handlers[EventSendMessage] = func(event Event, c *Client) error {
-		fmt.Println(event)
-		return nil
-	}
+	m.handlers[EventSendMessage] = SendMessageHandler
 }
 
 // 이벤트를 다른 클라이언트한테 보냄

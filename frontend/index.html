@@ -23,9 +23,79 @@
             <input type="text" name="message" id="message"><br><br>
             <input type="submit" value="Send">
         </form>
+
+        <div style="border: 3px solid black;margin-top: 30px;">
+            <form id="login-form">
+                <label for="username">username:</label>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">password:</label>
+                <input type="password" id="password" name="password"><br><br>
+                <input type="submit" value="Login">
+            </form>
+        </div>
     </div>
 
     <script type="text/javascript">
+        /* function login() {
+            let formData = {
+                "username": document.getElementById("username").value,
+                "password": document.getElementById("password").value
+            }
+            fetch("login", {
+                method: 'post',
+                body: JSON.stringify(formData),
+                mode: 'cors',
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw 'unauthorized';
+                }
+            }).then((data) => {
+                connectWebsocket(data.otp);
+            }).catch((e) => { alert(e); });
+            return false;
+        }
+
+        function connectWebsocket(otp) {
+            if (window[WebSocket]) {
+                console.log("supports websockets")
+                conn = new WebSocket("ws://" + document.location.host + "/ws?otp=" + otp);
+
+                conn.onopen = function (evt) {
+                    document.getElementById("connection-header").innerHTML = "Connect to Websocket: true";
+                }
+                conn.onclose = function (evt) {
+                    document.getElementById("connection-header").innerHTML = "Connected to Websocket: false";
+                }
+
+                conn.onmessage = function (evt) {
+                    console.log(evt);
+
+                    const eventData = JSON.parse(evt.data);
+                    const event = Object.assign(new Event, eventData);
+                    routeEvent(event);
+                }
+            } else {
+                alert("Not supporting websockets");
+            }
+        } */
+
+        class SendMessageEvent {
+            constructor(message, from) {
+                this.message = message;
+                this.from = from;
+            }
+        }
+
+        class NewMessageEvent {
+            constructor(message, from, sent) {
+                this.message = message;
+                this.from = from;
+                this.sent = sent;
+            }
+        }
+
         var selectedRoom = "yet";
 
         class Event {
@@ -41,12 +111,22 @@
             }
             switch (event.type) {
                 case "new_message":
-                    console.log("new message");
+                    const messageEvent = Object.assign(new NewMessageEvent, event.payload);
+                    appendChatMessage(messageEvent);
                     break;
                 default:
                     alert("unsupported message type");
                     break;
             }
+        }
+
+        function appendChatMessage(messageEvent) {
+            var date = new Date(messageEvent.sent);
+            const formattedMsg = `${date.toLocaleDateString()}: ${messageEvent.message}`;
+
+            textarea = document.getElementById("chatMessages");
+            textarea.innerHTML = textarea.innerHTML + "\n" + formattedMsg;
+            textarea.scrollTop = textarea.scrollHeight;
         }
 
         // JSON으로 패키징해서 다양한 정보를 다루기 쉽게 할 수 있음
@@ -66,7 +146,8 @@
         function sendMessage() {
             var newMessage = document.getElementById("message");
             if (newMessage != null) {
-                sendEvent("send_message", newMessage.value);
+                let outgoingEvent = new SendMessageEvent(newMessage.value, "DMin");
+                sendEvent("send_message", outgoingEvent)
             }
             return false;
         }
@@ -77,17 +158,17 @@
 
             if (window["WebSocket"]) {
                 console.log("supports websockets");
+                // Connect to websocket
                 conn = new WebSocket("ws://" + document.location.host + "/ws");
 
-                conn.onmessage = function (e) {
-                    console.log(e);
-                    // e.data는 메세지 내용임. 그것을 받아오는 것
-                    const eventData = JSON.parse(e.data);
-                    // eventData를 Event객체에 담아주는 함수
-                    const event = Object.assign(new Event, eventData);
 
-                    routeEvent(event)
+                conn.onmessage = function (evt) {
+                    console.log(evt);
+                    const eventData = JSON.parse(evt.data);
+                    const event = Object.assign(new Event, eventData);
+                    routeEvent(event);
                 }
+
             } else {
                 alert("Not supporting websockets");
             }
