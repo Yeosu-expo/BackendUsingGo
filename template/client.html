@@ -22,65 +22,79 @@
 </head>
 
 <body>
-    <h1>Pc Room Menu</h1>
-    <ul class="menu-category">
-        <li><button class="menu-container" onclick="toggleMenu('면류')">면류</button>
-            <ul class="menu-item" id="면류-item">
-                {{range .Menus}}
-                {{if eq .Category "면류"}}
-                <ul>
-                    <li>Name: {{.Name}}</li>
+    <div id="menu-bar">
+        <h1>Pc Room Menu</h1>
+        <ul class="menu-category">
+            <li><button class="menu-container" onclick="toggleMenu('면류')">면류</button>
+                <ul class="menu-item" id="면류-item">
+                    {{range .Menus}}
+                    {{if eq .Category "면류"}}
                     <ul>
-                        <li>Price: {{.Price}}</li>
+                        <li>Name: {{.Name}}</li>
+                        <ul>
+                            <li>Price: {{.Price}}</li>
+                        </ul>
                     </ul>
+                    <input type="submit" value="선택" onclick="setMenu('{{.Name}}', '{{.Category}}', '{{.Price}}')">
+                    {{end}}
+                    {{end}}
                 </ul>
-                {{end}}
-                {{end}}
-            </ul>
-        </li>
-        <li><button class="menu-container" onclick="toggleMenu('밥류')">밥류</button>
-            <ul class="menu-item" id="밥류-item">
-                {{range .Menus}}
-                {{if eq .Category "밥류"}}
-                <ul>
-                    <li>Name: {{.Name}}</li>
+            </li>
+            <li><button class="menu-container" onclick="toggleMenu('밥류')">밥류</button>
+                <ul class="menu-item" id="밥류-item">
+                    {{range .Menus}}
+                    {{if eq .Category "밥류"}}
                     <ul>
-                        <li>Price: {{.Price}}</li>
+                        <li>Name: {{.Name}}</li>
+                        <ul>
+                            <li>Price: {{.Price}}</li>
+                        </ul>
                     </ul>
+                    <input type="submit" value="선택" onclick="setMenu('{{.Name}}', '{{.Category}}', '{{.Price}}')">
+                    {{end}}
+                    {{end}}
                 </ul>
-                {{end}}
-                {{end}}
-            </ul>
-        </li>
-        <li><button class="menu-container" onclick="toggleMenu('음료수')">음료수</button>
-            <ul class="menu-item" id="음료수-item">
-                {{range .Menus}}
-                {{if eq .Category "음료수"}}
-                <ul>
-                    <li>Name: {{.Name}}</li>
+            </li>
+            <li><button class="menu-container" onclick="toggleMenu('음료수')">음료수</button>
+                <ul class="menu-item" id="음료수-item">
+                    {{range .Menus}}
+                    {{if eq .Category "음료수"}}
                     <ul>
-                        <li>Price: {{.Price}}</li>
+                        <li>Name: {{.Name}}</li>
+                        <ul>
+                            <li>Price: {{.Price}}</li>
+                        </ul>
                     </ul>
+                    <input type="submit" value="선택" onclick="setMenu('{{.Name}}', '{{.Category}}', '{{.Price}}')">
+                    {{end}}
+                    {{end}}
                 </ul>
-                {{end}}
-                {{end}}
-            </ul>
-        </li>
-        <li><button class="menu-container" onclick="toggleMenu('간식')">간식</button>
-            <ul class="menu-item" id="간식-item">
-                {{range .Menus}}
-                {{if eq .Category "간식"}}
-                <ul>
-                    <li>Name: {{.Name}}</li>
+            </li>
+            <li><button class="menu-container" onclick="toggleMenu('간식')">간식</button>
+                <ul class="menu-item" id="간식-item">
+                    {{range .Menus}}
+                    {{if eq .Category "간식"}}
                     <ul>
-                        <li>Price: {{.Price}}</li>
+                        <li>Name: {{.Name}}</li>
+                        <ul>
+                            <li>Price: {{.Price}}</li>
+                        </ul>
                     </ul>
+                    <input type="submit" value="선택" onclick="setMenu('{{.Name}}', '{{.Category}}', '{{.Price}}')">
+                    {{end}}
+                    {{end}}
                 </ul>
-                {{end}}
-                {{end}}
-            </ul>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </div>
+    <div id="order-bar">
+        <form id="order-send">
+            <input type="text" id="order-name">
+            <input type="text" id="order-category">
+            <input type="text" id="order-price">
+            <button type="submit">주문</button>
+        </form>
+    </div>
 
 
     <script>
@@ -90,6 +104,37 @@
                 container.style.display = "block";
             } else {
                 container.style.display = "none";
+            }
+        }
+
+        function setMenu(name, category, price) {
+            document.getElementById("order-name").value = name;
+            document.getElementById("order-category").value = category;
+            document.getElementById("order-price").value = price;
+        }
+
+        function sendOrder() {
+            name = document.getElementById("order-name").value;
+            category = document.getElementById("order-category").value;
+            price = document.getElementById("order-price").value;
+
+            var orderData = {
+                "name":name,
+                "category":category,
+                "price":price
+            };
+
+            conn.send(JSON.stringify(orderData));
+        }
+
+        window.onload = function() {
+            document.getElementById("order-send").onsubmit = sendOrder();
+
+            if(window["WebSocket"]) {
+                console.log("supports websocket");
+                conn =  new WebSocket("ws://" + document.location.host + "/ws");
+            } else {
+                alert("Not supporting websocket")
             }
         }
     </script>
