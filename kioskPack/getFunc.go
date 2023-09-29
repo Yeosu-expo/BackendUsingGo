@@ -7,17 +7,12 @@ import (
 )
 
 func OpenAdminHtml(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./template/admin.html"))
-	tmpl.Execute(w, nil)
-}
-
-func OpenChatHtml(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./template/chat.html"))
+	tmpl := template.Must(template.ParseFiles("./adminFront/admin.html"))
 	tmpl.Execute(w, nil)
 }
 
 func OpenClientHtml(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./template/client.html"))
+	tmpl := template.Must(template.ParseFiles("./clientFront/client.html"))
 
 	db, err := sql.Open("mysql", "root:9250@tcp(127.0.0.1:3306)/kiosk")
 	defer db.Close()

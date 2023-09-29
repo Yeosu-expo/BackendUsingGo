@@ -22,16 +22,18 @@ var (
 type ClientList map[*Client]bool
 
 type Client struct {
-	conn    *websocket.Conn
-	manager *Manager
-	egress  chan Event // 동시에 쓰는 것을 피하기 위한 채널
+	conn       *websocket.Conn
+	manager    *Manager
+	egress     chan Event // 동시에 쓰는 것을 피하기 위한 채널
+	clientType string     // 어떤 종류의 클라인지 확인
 }
 
-func NewCilent(conn *websocket.Conn, manager *Manager) *Client {
+func NewCilent(conn *websocket.Conn, manager *Manager, clientType string) *Client {
 	return &Client{
-		conn:    conn,
-		manager: manager,
-		egress:  make(chan Event),
+		conn:       conn,
+		manager:    manager,
+		egress:     make(chan Event),
+		clientType: clientType,
 	}
 }
 
@@ -62,7 +64,6 @@ func (c *Client) writeMessages() {
 			if err := c.conn.WriteMessage(websocket.TextMessage, data); err != nil {
 				log.Println(err)
 			}
-			log.Println("sent message")
 		case <-ticker.C:
 			log.Println("ping")
 			if err := c.conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
@@ -81,6 +82,7 @@ func (c *Client) readMessages() {
 	// 악의적인 사용을 방지하기 위해 512byte이상의 메세지가 들어오면, 연결이 끊기게 설정
 	c.conn.SetReadLimit(512)
 
+	// pong신호를 보내기 위해 설정하는 작업
 	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
 		log.Println(err)
 		return
@@ -90,6 +92,7 @@ func (c *Client) readMessages() {
 	// 고릴라 패키지 설명이 있는 공식문서 같은게 없어서 예측만 가능
 	c.conn.SetPongHandler(c.pongHandler)
 
+	// 중간에 채널도 없어서 계속 동작을 수행할 거 같은데 왜 잘 돌아가지?
 	for {
 		_, payload, err := c.conn.ReadMessage()
 
@@ -106,7 +109,7 @@ func (c *Client) readMessages() {
 			break
 		}
 		// 읽어온 이벤트를 routeEvent로 넘김
-		log.Println(request.Type)
+		log.Println("Event type:", request.Type)
 		if err := c.manager.routeEvent(request, c); err != nil {
 			log.Println("Error handling Message: ", err)
 		}
