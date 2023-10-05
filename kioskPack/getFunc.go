@@ -6,13 +6,18 @@ import (
 	"net/http"
 )
 
+func OpenChatHtml(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("./template/chatFront/chat.html"))
+	tmpl.Execute(w, nil)
+}
+
 func OpenAdminHtml(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./adminFront/admin.html"))
+	tmpl := template.Must(template.ParseFiles("./template/adminFront/admin.html"))
 	tmpl.Execute(w, nil)
 }
 
 func OpenClientHtml(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./clientFront/client.html"))
+	tmpl := template.Must(template.ParseFiles("./template/clientFront/client.html"))
 
 	db, err := sql.Open("mysql", "root:9250@tcp(127.0.0.1:3306)/kiosk")
 	defer db.Close()

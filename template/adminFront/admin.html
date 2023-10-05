@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk Admin Page</title>
+</head>
+
+<body>
+    <div>
+        <h1>Kiosk</h1>
+        <h4>Add Menu</h4>
+        <form action="http://localhost:8080/admin" method="post" onsubmit="getJson();clearInputFields();">
+            <input type="text" name="name" placeholder="NAME">
+            <input type="text" name="category" placeholder="CATEGORY">
+            <input type="text" name="price" placeholder="PRICE">
+            <button type="submit">ADD</button>
+        </form><br><br>
+        <textarea id="orderArea" cols="120" rows="20" placeholder="No Order yet"></textarea>
+    </div>
+    <script src="//code.jquery.com/jquery-3.5.1.min.js"></script> <!-- Load jQuery from CDN -->
+    <script type='text/javascript' src="admin.js"></script>
+</body>
+</html>
